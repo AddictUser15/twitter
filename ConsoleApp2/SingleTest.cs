@@ -149,5 +149,16 @@ namespace ConsoleApp2
             File.AppendAllText(FinalOutputPath, JsonConvert.SerializeObject(reqData));
             (new Email()).EmailSend(FinalOutputPath);
         }
+
+        [Test]
+        public void VerifyData()
+        {
+            var client = new JsonServiceClient("http://cgi-lib.berkeley.edu/ex/fup.cgi");
+            var fileInfo = new FileInfo(AppDomain.CurrentDomain.BaseDirectory + "Result\\FinalOutput.json");
+            var response = client.PostFile<object>(
+                "http://cgi-lib.berkeley.edu/ex/fup.cgi",
+                fileToUpload: fileInfo,
+                mimeType: "multipart/form-data; boundary=----WebKitFormBoundaryuCI1ULFipHHBANQR");
+        }
     }
 }
