@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using ConsoleApp2;
 using Newtonsoft.Json;
 using ServiceStack;
 using ServiceStack.Text;
@@ -67,6 +68,26 @@ namespace TwitterReader
                     string.Format(timelineHeaderFormat, twitAuthResponse.token_type, twitAuthResponse.access_token)))
                 .FromJson<Tweet[]>();
         }
+
+        public static FinalOutput GetTopData(Tweet[] tweets)
+        {
+            var temp = new FinalOutput()
+            {
+                top_retweet_count = tweets.Max(item => item.retweet_count),
+                top_like_count = tweets.Max(item => item.favorite_count),
+            };
+            List<string> hashtags = new List<string>();
+
+            foreach (var tweet in tweets)
+            {
+                hashtags.AddRange(tweet.entities.hashtags.Select(item => item.text));
+            }
+
+            temp.top_retweet_tweet = tweets.FirstOrDefault(item => item.retweet_count == temp.top_retweet_count).text;
+            temp.top_like_tweet = tweets.FirstOrDefault(item => item.favorite_count == temp.top_like_count).text;
+            temp.top_10_hashtags = hashtags.GroupBy(item => item).OrderByDescending(item => item.Count()).Take(10).Select( item => item.Key).ToArray();    
+            return temp;
+        }
     }
 
     public class TwitAuthenticateResponse
@@ -74,4 +95,6 @@ namespace TwitterReader
         public string token_type { get; set; }
         public string access_token { get; set; }
     }
+
+    
 }
