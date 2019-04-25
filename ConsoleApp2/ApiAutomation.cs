@@ -20,7 +20,8 @@ namespace ConsoleApp2
         {
             lastTweets = DataFetcher.FetchTweets("@stepin_forum");
             var reqData = DataFetcher.GetTopData(lastTweets);
-            File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "Result\\FinalOutput.json", JsonConvert.SerializeObject(reqData));
+            Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "Result");
+            File.AppendAllText(AppDomain.CurrentDomain.BaseDirectory + "Result\\FinalOutput.json", JsonConvert.SerializeObject(reqData));
         }
 
         [Test]
