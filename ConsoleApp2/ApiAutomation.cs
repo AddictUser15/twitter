@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using ServiceStack;
 using TweetSharp;
 using TwitterReader;
 
@@ -22,6 +23,13 @@ namespace ConsoleApp2
             var reqData = DataFetcher.GetTopData(lastTweets);
             Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "Result");
             File.AppendAllText(AppDomain.CurrentDomain.BaseDirectory + "Result\\FinalOutput.json", JsonConvert.SerializeObject(reqData));
+            var client = new JsonServiceClient("http://cgi-lib.berkeley.edu/ex/fup.cgi");
+            var fileInfo = new FileInfo(AppDomain.CurrentDomain.BaseDirectory + "Result\\FinalOutput.json");
+            var response = client.PostFile<object>(
+                "http://cgi-lib.berkeley.edu/ex/fup.cgi",
+                fileToUpload: fileInfo,
+                mimeType: "application/json");
+
         }
 
         [Test]
