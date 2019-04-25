@@ -8,6 +8,7 @@ namespace ConsoleApp2
 {
     public class FinalOutput
     {
+        public string timestamp { get; set; }
         public int top_retweet_count { get; set; }
         public string top_retweet_tweet { get; set; }
         public int top_like_count { get; set; }
@@ -21,7 +22,8 @@ namespace ConsoleApp2
     {
         public string name { get; set; }
         public string handle_name { get; set; }
-        public string follower_count { get; set; }
-        public string following_count { get; set; }
+        public int follower_count { get; set; }
+        public int following_count { get; set; }
+        public int numberoftweets { get; set; }
     }
 }

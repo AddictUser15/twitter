@@ -69,6 +69,61 @@ namespace TwitterReader
                 .FromJson<Tweet[]>();
         }
 
+        public static object FetchUserSuggestions()
+        {
+            var oAuthConsumerKey = "08EyoPXc8iXlwfYWsefDOj6br";
+            var oAuthConsumerSecret = "zFSsMKxJfAdD12lDU70jQHBjBQOEfDwuSpFj5jEyIrvWKhQaG2";
+            var oAuthUrl = "https://api.twitter.com/oauth2/token";
+
+
+            // Do the Authenticate
+            var authHeaderFormat = "Basic {0}";
+
+            var authHeader = string.Format(authHeaderFormat,
+                Convert.ToBase64String(Encoding.UTF8.GetBytes(Uri.EscapeDataString(oAuthConsumerKey) + ":" +
+                                                              Uri.EscapeDataString((oAuthConsumerSecret)))
+                ));
+
+            var postBody = "grant_type=client_credentials";
+
+            HttpWebRequest authRequest = (HttpWebRequest)WebRequest.Create(oAuthUrl);
+            authRequest.Headers.Add("Authorization", authHeader);
+            authRequest.Method = "POST";
+            authRequest.ContentType = "application/x-www-form-urlencoded;charset=UTF-8";
+            authRequest.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+
+            using (Stream stream = authRequest.GetRequestStream())
+            {
+                byte[] content = ASCIIEncoding.ASCII.GetBytes(postBody);
+                stream.Write(content, 0, content.Length);
+            }
+
+            authRequest.Headers.Add("Accept-Encoding", "gzip");
+
+            WebResponse authResponse = authRequest.GetResponse();
+            // deserialize into an object
+            TwitAuthenticateResponse twitAuthResponse;
+            using (authResponse)
+            {
+                using (var reader = new StreamReader(authResponse.GetResponseStream()))
+                {
+                    var objectText = reader.ReadToEnd();
+                    twitAuthResponse = JsonConvert.DeserializeObject<TwitAuthenticateResponse>(objectText);
+                }
+            }
+
+
+            // Do the timeline
+            var userSuggestions =
+                "https://api.twitter.com/1.1/users/suggestions/:slug/members.json";
+
+           var userSuggestionsFormat = "{0} {1}";
+            var userSuggestionObject =  userSuggestions.GetJsonFromUrl(req => req.Headers.Add("Authorization",
+                    string.Format(userSuggestionsFormat, twitAuthResponse.token_type, twitAuthResponse.access_token)))
+                .FromJson<object>();
+            return userSuggestionObject;
+        }
+
         public static FinalOutput GetTopData(Tweet[] tweets)
         {
             var temp = new FinalOutput()
