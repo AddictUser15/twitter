@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using TweetSharp;
 using TwitterReader;
@@ -17,7 +19,8 @@ namespace ConsoleApp2
         public void BeforeClass()
         {
             lastTweets = DataFetcher.FetchTweets("@stepin_forum");
-            DataFetcher.GetTopData(lastTweets);
+            var reqData = DataFetcher.GetTopData(lastTweets);
+            File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "Result\\FinalOutput.json", JsonConvert.SerializeObject(reqData));
         }
 
         [Test]
