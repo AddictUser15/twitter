@@ -9,7 +9,6 @@ using OpenQA.Selenium.Remote;
 
 namespace ConsoleApp2
 {
-    [TestFixture]
     public class BrowserStackNUnitTest
     {
         protected IWebDriver driver;
