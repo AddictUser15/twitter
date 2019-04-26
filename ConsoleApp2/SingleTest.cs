@@ -56,7 +56,7 @@ namespace ConsoleApp2
             {
                 driver.FindElement(By.Id("email_challenge_submit")).Click();
             }
-            
+            driver.Navigate().GoToUrl("https://twitter.com/stepin_forum");
             Thread.Sleep(5000);
             var followelements =
                 driver.FindElements(By.CssSelector(".account-group-inner .username.u-dir.u-textTruncate b"));
